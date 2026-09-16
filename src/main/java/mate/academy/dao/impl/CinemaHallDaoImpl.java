@@ -1,6 +1,7 @@
 package mate.academy.dao.impl;
 
 import java.util.List;
+import java.util.Optional;
 import mate.academy.dao.CinemaHallDao;
 import mate.academy.exception.DataProcessingException;
 import mate.academy.lib.Dao;
@@ -35,9 +36,9 @@ public class CinemaHallDaoImpl implements CinemaHallDao {
     }
 
     @Override
-    public CinemaHall get(Long id) {
+    public Optional<CinemaHall> get(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(CinemaHall.class, id);
+            return Optional.ofNullable(session.get(CinemaHall.class, id));
         } catch (Exception e) {
             throw new DataProcessingException("Can't get cinemaHall from DB by id: " + id, e);
         }
@@ -49,6 +50,8 @@ public class CinemaHallDaoImpl implements CinemaHallDao {
             Query<CinemaHall> getCinemaHallQuerry =
                     session.createQuery("FROM CinemaHall", CinemaHall.class);
             return getCinemaHallQuerry.getResultList();
+        } catch (Exception e) {
+            throw new DataProcessingException("Can't find cinema hall", e);
         }
     }
 }
